@@ -12,7 +12,10 @@ void StudentUndo::submit(const Action action, int row, int col, char ch) {
 }
 
 StudentUndo::Action StudentUndo::get(int &row, int &col, int& count, std::string& text) {
-    return Action::ERROR;  // TODO
+	UndoActions topStack = m_undoStack.top();
+	row = topStack.getRow();
+	col = topStack.getCol();
+    return topStack.getActions();  // TODO
 }
 
 void StudentUndo::clear() {
