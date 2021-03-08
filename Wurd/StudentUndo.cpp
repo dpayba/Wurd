@@ -26,11 +26,7 @@ void StudentUndo::submit(const Action action, int row, int col, char ch) {
 		m_undoStack.push(UndoActions(action, row, col, topString));
 		return;
 	}
-<<<<<<< HEAD
 	else if (action == Action::DELETE && topRow == row && topCol - 1 == col) { // consecutive backspaces
-=======
-	else if (action == Action::DELETE && topRow == row && topCol-1 == col) { // consecutive backspaces
->>>>>>> 0dfdde5f78b0d8b17c2d9fe99e4083b1627ed55c
 		m_undoStack.pop();
 		s += topString;
 		m_undoStack.push(UndoActions(action, row, col, s));
@@ -45,17 +41,10 @@ void StudentUndo::submit(const Action action, int row, int col, char ch) {
 	}
 
 	m_undoStack.push(UndoActions(action, row, col, s));
-<<<<<<< HEAD
 
 }
 
 StudentUndo::Action StudentUndo::get(int& row, int& col, int& count, std::string& text) {
-=======
-	
-}
-
-StudentUndo::Action StudentUndo::get(int &row, int &col, int& count, std::string& text) {
->>>>>>> 0dfdde5f78b0d8b17c2d9fe99e4083b1627ed55c
 	if (m_undoStack.empty())
 		return Action::ERROR;
 
@@ -77,7 +66,6 @@ StudentUndo::Action StudentUndo::get(int &row, int &col, int& count, std::string
 	m_undoStack.pop();
 
 	switch (topAction) {
-<<<<<<< HEAD
 	case Action::INSERT:
 		return Action::DELETE;
 	case Action::DELETE:
@@ -86,16 +74,6 @@ StudentUndo::Action StudentUndo::get(int &row, int &col, int& count, std::string
 		return Action::JOIN;
 	case Action::JOIN:
 		return Action::SPLIT;
-=======
-		case Action::INSERT:
-			return Action::DELETE;
-		case Action::DELETE:
-			return Action::INSERT;
-		case Action::SPLIT:
-			return Action::JOIN;
-		case Action::JOIN:
-			return Action::SPLIT;
->>>>>>> 0dfdde5f78b0d8b17c2d9fe99e4083b1627ed55c
 	}
 }
 

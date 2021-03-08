@@ -1,7 +1,2 @@
-<<<<<<< HEAD
 PlatformToolSet=v142:VCToolArchitecture=Native32Bit:VCToolsVersion=14.28.29910:TargetPlatformVersion=10.0.18362.0:
 Debug|x64|F:\Downloads\winskel\Wurd\|
-=======
-PlatformToolSet=v142:VCToolArchitecture=Native32Bit:VCToolsVersion=14.28.29333:TargetPlatformVersion=10.0.18362.0:
-Debug|x64|D:\Users\dpayb\Downloads\winskel\Wurd\|
->>>>>>> 0dfdde5f78b0d8b17c2d9fe99e4083b1627ed55c

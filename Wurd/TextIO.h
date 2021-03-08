@@ -39,13 +39,8 @@ public:
 	}
 
 	enum COLOR {
-<<<<<<< HEAD
-		WHITE = 1,
-		RED = 2
-=======
 		WHITE = COLOR_WHITE,
 		RED = COLOR_RED
->>>>>>> 0dfdde5f78b0d8b17c2d9fe99e4083b1627ed55c
 	};
 
 	static void print(char ch, COLOR fcolor = COLOR::WHITE) {

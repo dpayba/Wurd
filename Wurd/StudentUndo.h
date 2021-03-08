@@ -16,11 +16,7 @@ private:
 		UndoActions(const Action action, int row, int col, std::string str) : m_actions(action), m_row(row), m_col(col), m_str(str) {}
 		UndoActions(const Action action, int row, int col) : m_actions(action), m_row(row), m_col(col) {}
 		Action getActions() const { return m_actions; }
-<<<<<<< HEAD
-		int getRow() const { return m_row; }
-=======
 		int getRow() const { return m_row;  }
->>>>>>> 0dfdde5f78b0d8b17c2d9fe99e4083b1627ed55c
 		int getCol() const { return m_col; }
 		std::string getStr() const { return m_str; }
 	private:
