@@ -187,6 +187,13 @@ void StudentTextEditor::backspace() {
 
 void StudentTextEditor::insert(char ch) {
     std::string s = *(m_currRowIterator);
+    if (ch == '\t') {
+        s = s.substr(0, m_currCol) + "    " + s.substr(m_currCol);
+        m_currCol += 4;
+        *(m_currRowIterator) = s;
+        getUndo()->submit(Undo::Action::INSERT, m_currRow, m_currCol, ch);
+        return;
+    }
     s = s.substr(0, m_currCol) + ch + s.substr(m_currCol);
     *(m_currRowIterator) = s;
     m_currCol++;
@@ -253,15 +260,39 @@ void StudentTextEditor::undo() {
     std::string strUndo;
     Undo::Action action = getUndo()->get(undoRow, undoCol, numUndo, strUndo);
 
+    int adjustPosition = undoRow - m_currRow;
+    if (adjustPosition > 0) {
+        for (int i = 0; i != adjustPosition; i++)
+            m_currRowIterator++;
+    }
+
+    if (adjustPosition < 0) {
+        for (int i = 0; i != adjustPosition; i--)
+            m_currRowIterator--;
+    }
+
+    m_currCol = undoCol;
+    m_currRow = undoRow;
+
     switch (action) {
         case Undo::Action::INSERT:
-            m_currRow = undoRow;
-            m_currCol = undoCol;
             (*m_currRowIterator) = (*m_currRowIterator).substr(0, m_currCol) + strUndo + (*m_currRowIterator).substr(m_currCol);
             break;
         case Undo::Action::DELETE:
             (*m_currRowIterator) = (*m_currRowIterator).substr(0, undoCol-numUndo) + (*m_currRowIterator).substr(undoCol);
             m_currCol = undoCol-numUndo;
+            break;
+        case Undo::Action::SPLIT: {
+            std::string s = (*m_currRowIterator).substr(m_currCol);
+            (*m_currRowIterator) = (*m_currRowIterator).substr(0, m_currCol);
+            m_currRowIterator++;
+            m_wordList.insert(m_currRowIterator, s);
+            m_currRowIterator--;
+            m_currRowIterator--;
+        //    m_currRow++;
+            break;
+        }
+        case Undo::Action::JOIN:
             break;
             
     }

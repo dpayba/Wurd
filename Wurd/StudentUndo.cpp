@@ -39,6 +39,7 @@ void StudentUndo::submit(const Action action, int row, int col, char ch) {
 		m_undoStack.push(UndoActions(action, row, col, topString));
 		return;
 	}
+
 	m_undoStack.push(UndoActions(action, row, col, s));
 	
 	// TODO
