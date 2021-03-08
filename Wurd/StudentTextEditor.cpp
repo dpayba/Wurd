@@ -14,13 +14,16 @@ StudentTextEditor::StudentTextEditor(Undo* undo)
  : TextEditor(undo) {
     m_currCol = 0;
     m_currRow = 0;
-
+    m_wordList.push_back("");
+    m_currRowIterator = m_wordList.begin();
     // TODO
 }
 
 StudentTextEditor::~StudentTextEditor()
 {
-    // TODO
+    std::list<std::string>::iterator it = m_wordList.begin();
+    while (it != m_wordList.end())
+        it = m_wordList.erase(it);
 }
 
 bool StudentTextEditor::load(std::string file) {
@@ -54,12 +57,22 @@ bool StudentTextEditor::load(std::string file) {
     m_currRowIterator = m_wordList.begin();
     m_currRow = 0;
     m_currCol = 0;
-    
+  
     return true;  // TODO
 }
 
 bool StudentTextEditor::save(std::string file) {
-    return false;  // TODO
+    std::ofstream outfile(file);
+    if (!outfile)
+        return false;
+
+    std::list<std::string>::iterator it = m_wordList.begin();
+    while (it != m_wordList.end()) {
+        outfile << (*it) << '\n';
+        it++;
+    }
+
+    return true; 
 }
 
 void StudentTextEditor::reset() {
@@ -85,7 +98,7 @@ void StudentTextEditor::move(Dir dir) {
             }
             break;
         case Dir::DOWN:
-            if (m_currRow == m_wordList.size())
+            if (m_currRow == m_wordList.size()-1)
                 break;
             else {
                 m_currRowIterator++;
@@ -109,7 +122,7 @@ void StudentTextEditor::move(Dir dir) {
                 m_currCol--;
             break;
         case Dir::RIGHT:
-            if (m_currRow == m_wordList.size() && m_currCol == (*m_currRowIterator).length())
+            if (m_currRow == m_wordList.size()-1 && m_currCol == (*m_currRowIterator).length())
                 break;
             else if (m_currCol == (*m_currRowIterator).length()) {
                 m_currRow++;
@@ -130,26 +143,46 @@ void StudentTextEditor::move(Dir dir) {
 }
 
 void StudentTextEditor::del() {
+    std::list<std::string>::iterator last = m_wordList.end();
+    last--;
+    if (m_currRow == m_wordList.size()-1 && m_currCol == (*last).length())
+        return;
+
     std::string s = *(m_currRowIterator);
-    s = s.substr(0, m_currCol) + s.substr(m_currCol+1);
+    if (m_currCol == (*m_currRowIterator).length()) {
+        m_currRowIterator++;
+        std::string stringToCopy = *(m_currRowIterator);
+        m_currRowIterator = m_wordList.erase(m_currRowIterator);
+        m_currRowIterator--;
+        s = s + stringToCopy;
+        getUndo()->submit(Undo::Action::JOIN, m_currRow, m_currCol);
+    }
+    else {
+        char chDelete = s.at(m_currCol);
+        s = s.substr(0, m_currCol) + s.substr(m_currCol + 1);
+        getUndo()->submit(Undo::Action::DELETE, m_currRow, m_currCol, chDelete);
+    }
     *(m_currRowIterator) = s;
-    if (m_currCol = (*m_currRowIterator).length()1)
-        exit(1);
-    // TODO
+
 }
 
 void StudentTextEditor::backspace() {
     std::string s = *(m_currRowIterator);
-    s = s.substr(0, m_currCol-1) + s.substr(m_currCol);
-    *(m_currRowIterator) = s;
     if (m_currCol == 0 || *(m_currRowIterator) == "") {
         m_currRowIterator = m_wordList.erase(m_currRowIterator);
         m_currRowIterator--;
         m_currRow--;
         m_currCol = (*m_currRowIterator).length();
+        s = *(m_currRowIterator) + s;
+        getUndo()->submit(Undo::Action::JOIN, m_currRow, m_currCol);
     }
-    else
+    else {
+        char chDelete = s.at(m_currCol-1);
+        s = s.substr(0, m_currCol - 1) + s.substr(m_currCol);
         m_currCol--;
+        getUndo()->submit(Undo::Action::DELETE, m_currRow, m_currCol, chDelete);
+    }
+    *(m_currRowIterator) = s;
 }
 
 void StudentTextEditor::insert(char ch) {
@@ -157,9 +190,18 @@ void StudentTextEditor::insert(char ch) {
     s = s.substr(0, m_currCol) + ch + s.substr(m_currCol);
     *(m_currRowIterator) = s;
     m_currCol++;
+    getUndo()->submit(Undo::Action::INSERT, m_currRow, m_currCol, ch);
 }
 
 void StudentTextEditor::enter() {
+    getUndo()->submit(Undo::Action::SPLIT, m_currRow, m_currCol);
+    std::string s = (*m_currRowIterator).substr(m_currCol);
+    (*m_currRowIterator) = (*m_currRowIterator).substr(0, m_currCol);
+    m_currRowIterator++;
+    m_wordList.insert(m_currRowIterator, s);
+    m_currRowIterator--;
+    m_currRow++;
+    m_currCol = 0;
     // TODO
 }
 
@@ -205,6 +247,27 @@ int StudentTextEditor::getLines(int startRow, int numRows, std::vector<std::stri
 }
 
 void StudentTextEditor::undo() {
+    int undoRow;
+    int undoCol;
+    int numUndo;
+    std::string strUndo;
+    Undo::Action action = getUndo()->get(undoRow, undoCol, numUndo, strUndo);
+
+    switch (action) {
+        case Undo::Action::INSERT:
+            m_currRow = undoRow;
+            m_currCol = undoCol;
+            (*m_currRowIterator) = (*m_currRowIterator).substr(0, m_currCol) + strUndo + (*m_currRowIterator).substr(m_currCol);
+            break;
+        case Undo::Action::DELETE:
+            (*m_currRowIterator) = (*m_currRowIterator).substr(0, undoCol-numUndo) + (*m_currRowIterator).substr(undoCol);
+            m_currCol = undoCol-numUndo;
+            break;
+            
+    }
+
+       
     // TODO
+
 }
 

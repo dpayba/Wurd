@@ -13,18 +13,20 @@ public:
 
 private:
 	struct UndoActions {
-		UndoActions(Action action, int row, int col, char ch) : m_actions(action), m_row(row), m_col(col), m_ch(ch) {}
+		UndoActions(const Action action, int row, int col, std::string str) : m_actions(action), m_row(row), m_col(col), m_str(str) {}
+		UndoActions(const Action action, int row, int col) : m_actions(action), m_row(row), m_col(col) {}
 		Action getActions() const { return m_actions; }
 		int getRow() const { return m_row;  }
 		int getCol() const { return m_col; }
-		char getChar() const { return m_ch;  }
+		std::string getStr() const { return m_str; }
 	private:
-		Action m_actions;
+		const Action m_actions;
 		int m_row;
 		int m_col;
-		char m_ch;
+		std::string m_str;
 	};
 	std::stack<UndoActions> m_undoStack;
+	int m_charactersInvolved = 1;
 };
 
 #endif // STUDENTUNDO_H_
