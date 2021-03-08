@@ -16,7 +16,6 @@ StudentTextEditor::StudentTextEditor(Undo* undo)
     m_currRow = 0;
     m_wordList.push_back("");
     m_currRowIterator = m_wordList.begin();
-    // TODO
 }
 
 StudentTextEditor::~StudentTextEditor()
@@ -305,7 +304,6 @@ void StudentTextEditor::undo() {
             break;
         }
     }
-    // TODO
 
 }
 

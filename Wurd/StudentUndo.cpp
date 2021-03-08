@@ -42,7 +42,6 @@ void StudentUndo::submit(const Action action, int row, int col, char ch) {
 
 	m_undoStack.push(UndoActions(action, row, col, s));
 	
-	// TODO
 }
 
 StudentUndo::Action StudentUndo::get(int &row, int &col, int& count, std::string& text) {
@@ -76,7 +75,6 @@ StudentUndo::Action StudentUndo::get(int &row, int &col, int& count, std::string
 		case Action::JOIN:
 			return Action::SPLIT;
 	}
-	// TODO
 }
 
 void StudentUndo::clear() {

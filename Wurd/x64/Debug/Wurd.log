@@ -1,10 +1,2 @@
-﻿  StudentTextEditor.cpp
-D:\Users\dpayb\Downloads\winskel\Wurd\Wurd\StudentTextEditor.cpp(80,62): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-D:\Users\dpayb\Downloads\winskel\Wurd\Wurd\StudentTextEditor.cpp(93,62): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-D:\Users\dpayb\Downloads\winskel\Wurd\Wurd\StudentTextEditor.cpp(106,58): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-D:\Users\dpayb\Downloads\winskel\Wurd\Wurd\StudentTextEditor.cpp(126,58): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-D:\Users\dpayb\Downloads\winskel\Wurd\Wurd\StudentTextEditor.cpp(136,8): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-D:\Users\dpayb\Downloads\winskel\Wurd\Wurd\StudentTextEditor.cpp(136,50): error C2143: syntax error: missing ')' before 'constant'
-D:\Users\dpayb\Downloads\winskel\Wurd\Wurd\StudentTextEditor.cpp(136,51): error C2059: syntax error: ')'
-D:\Users\dpayb\Downloads\winskel\Wurd\Wurd\StudentTextEditor.cpp(137,9): error C2146: syntax error: missing ';' before identifier 'exit'
-D:\Users\dpayb\Downloads\winskel\Wurd\Wurd\StudentTextEditor.cpp(149,50): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+﻿  StudentSpellCheck.cpp
+  Wurd.vcxproj -> D:\Users\dpayb\Downloads\winskel\Wurd\x64\Debug\Wurd.exe
