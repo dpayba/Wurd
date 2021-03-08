@@ -103,12 +103,16 @@ public:
 	// line: The status line to display.
 	void writeStatus(const std::string& line) {
 		TextIO::move(rows_, 0);
+<<<<<<< HEAD
 		if (line.length() <= cols_) {
 			TextIO::print(line);
 			TextIO::print(std::string(cols_ - line.length(), ' '));
 		}
 		else
 			TextIO::print(line.substr(0, cols_));
+=======
+		TextIO::print(line + std::string(cols_ - line.length(), ' '));
+>>>>>>> 0dfdde5f78b0d8b17c2d9fe99e4083b1627ed55c
 	}
 
 private:
