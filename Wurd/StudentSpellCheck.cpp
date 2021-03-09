@@ -84,17 +84,14 @@ void StudentSpellCheck::spellCheckLine(const std::string& line, std::vector<Spel
 	int length = 0;
 	while (i < line.size()) {
 		if (!isalpha(line[i]) || line[i] == 39) {
-			if (!m_trie->search(line.substr(startPos, length))) { // if not word
-				Position position;
-				position.start = startPos;
-				position.end = length + startPos - 1;
-				problems.push_back(position);
-			}
 			if (i == line.size() - 1) // make sure not end of string
 				break;
 			else {
-				while (!isalpha(line[i]) || line[i] == 39) // loop through until letters again
+				while (!isalpha(line[i]) || line[i] == 39) { // loop through until letters again
+					if (i == line.size() - 1)
+						return;
 					i++;
+				}
 			}
 			startPos = i;
 			length = 0;
@@ -103,7 +100,13 @@ void StudentSpellCheck::spellCheckLine(const std::string& line, std::vector<Spel
 			i++;
 			length++;
 		}
+
+		if (!m_trie->search(line.substr(startPos, length))) { // if not word
+			Position position;
+			position.start = startPos;
+			position.end = length + startPos - 1;
+			problems.push_back(position);
+		}
 	}
-	
 	// TODO
 }

@@ -1,7 +1,7 @@
-Alfa
+Alfa\r
 Bravo
 Charlie
-Delta
+Delta\r
 Echo
 Foxtrot
 Golf

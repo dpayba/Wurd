@@ -7,18 +7,27 @@ Undo* createUndo()
 
 void StudentUndo::submit(const Action action, int row, int col, char ch) {
 	if (m_undoStack.empty()) {
+		if (action == Action::INSERT) {
+			int charsInvolved = 1;
+			m_undoStack.push(UndoActions(action, row, col, charsInvolved));
+		}
 		std::string s;
 		s.push_back(ch);
 		m_undoStack.push(UndoActions(action, row, col, s));
 		return;
 	}
-	Action topAction = m_undoStack.top().getActions();
-	int topRow = m_undoStack.top().getRow();
-	int topCol = m_undoStack.top().getCol();
-	std::string topString = m_undoStack.top().getStr();
 
+	// get values at top of stack to check for batching
+	Action topAction = m_undoStack.top().m_actions;
+	int topRow = m_undoStack.top().m_row;
+	int topCol = m_undoStack.top().m_col;
+	std::string topString = m_undoStack.top().m_str;
+	int charsInvolved = m_undoStack.top().m_charactersInvolved;
+
+	// turn char into a string
 	std::string s;
 	s.push_back(ch);
+
 
 	if (action == Action::DELETE && topRow == row && topCol == col) { // consecutive deletes
 		m_undoStack.pop();
@@ -33,13 +42,16 @@ void StudentUndo::submit(const Action action, int row, int col, char ch) {
 		return;
 	}
 	else if (action == Action::INSERT && topRow == row && topCol + 1 == col) { // consecutive letters typed
-		m_charactersInvolved++;
 		m_undoStack.pop();
-		topString += s;
-		m_undoStack.push(UndoActions(action, row, col, topString));
+		m_undoStack.push(UndoActions(action, row, col, charsInvolved+1));
 		return;
 	}
 
+	if (action == Action::INSERT) {
+		m_undoStack.push(UndoActions(action, row, col, charsInvolved+1));
+	}
+
+	// push actions done
 	m_undoStack.push(UndoActions(action, row, col, s));
 
 }
@@ -48,19 +60,20 @@ StudentUndo::Action StudentUndo::get(int& row, int& col, int& count, std::string
 	if (m_undoStack.empty())
 		return Action::ERROR;
 
-	Action topAction = m_undoStack.top().getActions();
-	row = m_undoStack.top().getRow();
-	col = m_undoStack.top().getCol();
+	Action topAction = m_undoStack.top().m_actions;
+	row = m_undoStack.top().m_row;
+	col = m_undoStack.top().m_col;
+	int charsInvolved = m_undoStack.top().m_charactersInvolved;
+
 	if (topAction == Action::INSERT) {
-		count = m_charactersInvolved;
-		m_charactersInvolved = 1;
+		count = charsInvolved;
 	}
 	else {
 		count = 1;
 	}
 
 	if (topAction == Action::DELETE)
-		text = m_undoStack.top().getStr();
+		text = m_undoStack.top().m_str;
 	else
 		text = "";
 	m_undoStack.pop();
@@ -78,6 +91,7 @@ StudentUndo::Action StudentUndo::get(int& row, int& col, int& count, std::string
 }
 
 void StudentUndo::clear() {
+	// O(N)
 	while (m_undoStack.empty())
 		m_undoStack.pop();
 }
