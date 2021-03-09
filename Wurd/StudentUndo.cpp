@@ -7,10 +7,6 @@ Undo* createUndo()
 
 void StudentUndo::submit(const Action action, int row, int col, char ch) {
 	if (m_undoStack.empty()) {
-		if (action == Action::INSERT) {
-			int charsInvolved = 1;
-			m_undoStack.push(UndoActions(action, row, col, charsInvolved));
-		}
 		std::string s;
 		s.push_back(ch);
 		m_undoStack.push(UndoActions(action, row, col, s));
@@ -22,33 +18,29 @@ void StudentUndo::submit(const Action action, int row, int col, char ch) {
 	int topRow = m_undoStack.top().m_row;
 	int topCol = m_undoStack.top().m_col;
 	std::string topString = m_undoStack.top().m_str;
-	int charsInvolved = m_undoStack.top().m_charactersInvolved;
 
 	// turn char into a string
 	std::string s;
 	s.push_back(ch);
 
 
-	if (action == Action::DELETE && topRow == row && topCol == col) { // consecutive deletes
+	if (action == Action::DELETE && topRow == row && topCol == col && topAction == Action::DELETE) { // consecutive deletes
 		m_undoStack.pop();
 		topString += s;
 		m_undoStack.push(UndoActions(action, row, col, topString));
 		return;
 	}
-	else if (action == Action::DELETE && topRow == row && topCol - 1 == col) { // consecutive backspaces
+	else if (action == Action::DELETE && topRow == row && topCol - 1 == col && topAction == Action::DELETE) { // consecutive backspaces
 		m_undoStack.pop();
 		s += topString;
 		m_undoStack.push(UndoActions(action, row, col, s));
 		return;
 	}
-	else if (action == Action::INSERT && topRow == row && topCol + 1 == col) { // consecutive letters typed
+	else if (action == Action::INSERT && topRow == row && topCol + 1 == col && topAction == Action::INSERT) { // consecutive letters typed
 		m_undoStack.pop();
-		m_undoStack.push(UndoActions(action, row, col, charsInvolved+1));
+		topString += s;
+		m_undoStack.push(UndoActions(action, row, col, topString));
 		return;
-	}
-
-	if (action == Action::INSERT) {
-		m_undoStack.push(UndoActions(action, row, col, charsInvolved+1));
 	}
 
 	// push actions done
@@ -63,10 +55,9 @@ StudentUndo::Action StudentUndo::get(int& row, int& col, int& count, std::string
 	Action topAction = m_undoStack.top().m_actions;
 	row = m_undoStack.top().m_row;
 	col = m_undoStack.top().m_col;
-	int charsInvolved = m_undoStack.top().m_charactersInvolved;
 
 	if (topAction == Action::INSERT) {
-		count = charsInvolved;
+		count = m_undoStack.top().m_str.length();
 	}
 	else {
 		count = 1;

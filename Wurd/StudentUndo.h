@@ -14,13 +14,11 @@ public:
 private:
 	struct UndoActions {
 		UndoActions(const Action action, int row, int col, std::string str) : m_actions(action), m_row(row), m_col(col), m_str(str) {}
-		UndoActions(const Action action, int row, int col, int charsInvolved) : m_actions(action), m_row(row), m_col(col), m_charactersInvolved(charsInvolved) {}
 		UndoActions(const Action action, int row, int col) : m_actions(action), m_row(row), m_col(col) {}
 		const Action m_actions;
 		int m_row;
 		int m_col;
 		std::string m_str;
-		int m_charactersInvolved;
 	};
 	std::stack<UndoActions> m_undoStack;
 };
