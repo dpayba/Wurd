@@ -7,10 +7,16 @@ Undo* createUndo()
 
 void StudentUndo::submit(const Action action, int row, int col, char ch) {
 	if (m_undoStack.empty()) {
-		std::string s;
-		s.push_back(ch);
-		m_undoStack.push(UndoActions(action, row, col, s));
-		return;
+		if (ch == '\t') {
+			m_undoStack.push(UndoActions(action, row, col, "    "));
+			return;
+		}
+		else {
+			std::string s;
+			s.push_back(ch);
+			m_undoStack.push(UndoActions(action, row, col, s));
+			return;
+		}
 	}
 
 	// get values at top of stack to check for batching
@@ -18,6 +24,11 @@ void StudentUndo::submit(const Action action, int row, int col, char ch) {
 	int topRow = m_undoStack.top().m_row;
 	int topCol = m_undoStack.top().m_col;
 	std::string topString = m_undoStack.top().m_str;
+
+	if (ch == '\t') {
+		m_undoStack.push(UndoActions(action, row, col, "    "));
+		return;
+	}
 
 	// turn char into a string
 	std::string s;
@@ -78,11 +89,14 @@ StudentUndo::Action StudentUndo::get(int& row, int& col, int& count, std::string
 		return Action::JOIN;
 	case Action::JOIN:
 		return Action::SPLIT;
+	case Action::ERROR:
+		return Action::ERROR;
 	}
+	return Action::ERROR;
 }
 
 void StudentUndo::clear() {
 	// O(N)
-	while (m_undoStack.empty())
+	while (!m_undoStack.empty())
 		m_undoStack.pop();
 }

@@ -82,6 +82,17 @@ private:
 			}
 			return curr->isLeaf;
 		}
+
+		void destroy(Trie *curr) {
+			if (curr == nullptr) {
+				return;
+			}
+
+			for (int i = 0; i < 27; i++) 
+				destroy(children[i]);
+
+			delete curr;
+		}
 	
 	};
 	Trie* m_trie;

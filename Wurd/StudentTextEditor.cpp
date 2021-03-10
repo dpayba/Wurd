@@ -37,12 +37,10 @@ bool StudentTextEditor::load(std::string file) {
     }
 
     // O(M)
-    std::list<std::string>::iterator clear = m_wordList.begin(); 
-    while (clear != m_wordList.end()) {
-        clear = m_wordList.erase(clear);
-    }
+    reset();
 
     std::string s;
+    m_wordList.clear();
     // O(N)
     while (getline(infile, s)) { 
         if (!s.empty() && s.back() == 'r') {
@@ -215,7 +213,7 @@ void StudentTextEditor::insert(char ch) {
         s = s.substr(0, m_currCol) + "    " + s.substr(m_currCol);
         m_currCol += 4;
         *(m_currRowIterator) = s;
-        getUndo()->submit(Undo::Action::INSERT, m_currRow, m_currCol, ch);
+        getUndo()->submit(Undo::Action::INSERT, m_currRow, m_currCol, '\t');
         return;
     }
     // O(L)
@@ -250,7 +248,7 @@ void StudentTextEditor::getPos(int& row, int& col) const {
 }
 
 int StudentTextEditor::getLines(int startRow, int numRows, std::vector<std::string>& lines) const {
-    if (startRow < 0 || numRows < 0 || startRow > lines.size())
+    if (startRow < 0 || numRows < 0 || startRow > m_wordList.size())
         return -1;
 
     int linesAdded = 0;
@@ -276,12 +274,12 @@ int StudentTextEditor::getLines(int startRow, int numRows, std::vector<std::stri
             it--;
     }
 
+    // if less than numRows available
     // numRows*L
-    while (startRow != numRows) { // loop from startRow to numRows or until list empty
+    for (int r = 0; r < numRows; r++) { // loop from startRow to numRows or until list empty
         if (it == m_wordList.end())
             break;
         lines.push_back(*it);
-        startRow++;
         it++;
         linesAdded++;
     }
@@ -340,6 +338,9 @@ void StudentTextEditor::undo() {
         m_currRowIterator--;
         (*m_currRowIterator) += s;
         break;
+    }
+    case Undo::Action::ERROR: {
+        return;
     }
     }
 

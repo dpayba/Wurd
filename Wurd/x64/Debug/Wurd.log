@@ -1,4 +1,2 @@
-﻿  StudentUndo.cpp
-F:\Downloads\winskel\Wurd\Wurd\StudentUndo.cpp(60,43): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-F:\Downloads\winskel\Wurd\Wurd\StudentUndo.cpp(82): warning C4715: 'StudentUndo::get': not all control paths return a value
+﻿  StudentSpellCheck.cpp
   Wurd.vcxproj -> F:\Downloads\winskel\Wurd\x64\Debug\Wurd.exe

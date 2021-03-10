@@ -10,7 +10,8 @@ SpellCheck* createSpellCheck()
 }
 
 StudentSpellCheck::~StudentSpellCheck() {
-	// TODO
+	m_trie->destroy(m_trie);
+	delete m_trie;
 }
 
 bool StudentSpellCheck::load(std::string dictionaryFile) {
@@ -27,7 +28,7 @@ bool StudentSpellCheck::load(std::string dictionaryFile) {
 		m_trie->insert(s);
 	}
 
-	return true; // TODO
+	return true; 
 }
 
 bool StudentSpellCheck::spellCheck(std::string word, int max_suggestions, std::vector<std::string>& suggestions) {
@@ -73,7 +74,7 @@ bool StudentSpellCheck::spellCheck(std::string word, int max_suggestions, std::v
 		}
 	}
 
-	return false; // TODO
+	return false; 
 }
 
 void StudentSpellCheck::spellCheckLine(const std::string& line, std::vector<SpellCheck::Position>& problems) {
@@ -82,8 +83,15 @@ void StudentSpellCheck::spellCheckLine(const std::string& line, std::vector<Spel
 	int startPos = 0;
 	int i = 0;
 	int length = 0;
+	// O(S)
 	while (i < line.size()) {
-		if (!isalpha(line[i]) || line[i] == 39) {
+		if (!isalpha(line[i]) || line[i] == 39) { // if space or word separator
+			if (!m_trie->search(line.substr(startPos, length))) { // if not word
+				Position position;
+				position.start = startPos;
+				position.end = length + startPos - 1;
+				problems.push_back(position);
+			}
 			if (i == line.size() - 1) // make sure not end of string
 				break;
 			else {
@@ -96,17 +104,18 @@ void StudentSpellCheck::spellCheckLine(const std::string& line, std::vector<Spel
 			startPos = i;
 			length = 0;
 		}
-		else {
-			i++;
+		else { // not end of word
 			length++;
+			i++;
+			if (i == line.size()) {
+				if (!m_trie->search(line.substr(startPos, i))) { // if not word but at end
+					Position position;
+					position.start = startPos;
+					position.end = length + startPos;
+					problems.push_back(position);
+				}
+			}
 		}
 
-		if (!m_trie->search(line.substr(startPos, length))) { // if not word
-			Position position;
-			position.start = startPos;
-			position.end = length + startPos - 1;
-			problems.push_back(position);
-		}
 	}
-	// TODO
 }
