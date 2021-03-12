@@ -89,7 +89,7 @@ private:
 			}
 
 			for (int i = 0; i < 27; i++) 
-				destroy(children[i]);
+				destroy(curr->children[i]);
 
 			delete curr;
 		}

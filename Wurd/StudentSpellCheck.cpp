@@ -11,7 +11,6 @@ SpellCheck* createSpellCheck()
 
 StudentSpellCheck::~StudentSpellCheck() {
 	m_trie->destroy(m_trie);
-	delete m_trie;
 }
 
 bool StudentSpellCheck::load(std::string dictionaryFile) {
@@ -21,6 +20,8 @@ bool StudentSpellCheck::load(std::string dictionaryFile) {
 		std::cerr << "Error Opening File" << std::endl;
 		return false;
 	}
+
+	m_trie->destroy(m_trie);
 
 	std::string s;
 	m_trie = new Trie();
